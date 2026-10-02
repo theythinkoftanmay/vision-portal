@@ -47,7 +47,6 @@ export default function Step1Profile({ onNext, initialData }: Step1ProfileProps)
       const { data, error: insertError } = await supabase
         .from('students')
         .insert({
-          id: user.id,
           user_id: user.id,
           name: formData.name.trim(),
           college_name: formData.college_name.trim(),
@@ -61,6 +60,10 @@ export default function Step1Profile({ onNext, initialData }: Step1ProfileProps)
       if (insertError) {
         console.error('Insert error:', insertError)
         throw insertError
+      }
+
+      if (!data) {
+        throw new Error('Profile created but no data returned')
       }
 
       console.log('Student profile created:', data)

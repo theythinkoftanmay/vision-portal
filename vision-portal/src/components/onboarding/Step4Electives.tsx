@@ -31,6 +31,8 @@ export default function Step4Electives({ studentId, hasClonedSlots, onFinish, on
     end_time: '10:00',
   })
 
+  const [isProcessing, setIsProcessing] = useState(false)
+
   const addSlotsMutation = useMutation({
     mutationFn: () => {
       const slotsToAdd = slots.map(slot => ({
@@ -46,10 +48,13 @@ export default function Step4Electives({ studentId, hasClonedSlots, onFinish, on
       if (result.slotsCreated > 0) {
         alert(`Success! ${result.slotsCreated} elective(s) added to your schedule.`)
       }
+      setIsProcessing(false)
       onFinish()
     },
     onError: (error: Error) => {
-      alert(`Failed to add electives: ${error.message}`)
+      console.error('Add slots mutation error:', error)
+      alert(`Failed to add electives: ${error.message}. Try again or finish without adding more classes.`)
+      setIsProcessing(false)
     },
   })
 
@@ -99,6 +104,7 @@ export default function Step4Electives({ studentId, hasClonedSlots, onFinish, on
         alert('Please add at least one class to your schedule')
       }
     } else {
+      setIsProcessing(true)
       addSlotsMutation.mutate()
     }
   }
@@ -246,18 +252,18 @@ export default function Step4Electives({ studentId, hasClonedSlots, onFinish, on
       <div className="flex gap-4">
         <button
           onClick={onBack}
-          disabled={addSlotsMutation.isPending}
-          className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium"
+          disabled={isProcessing || addSlotsMutation.isPending}
+          className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
           ← Back
         </button>
 
         <button
           onClick={handleFinish}
-          disabled={addSlotsMutation.isPending}
+          disabled={isProcessing || addSlotsMutation.isPending}
           className="flex-1 bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 disabled:bg-gray-400 font-medium text-lg"
         >
-          {addSlotsMutation.isPending
+          {isProcessing || addSlotsMutation.isPending
             ? 'Saving...'
             : slots.length > 0
             ? `Finish Setup & Add ${slots.length} Class${slots.length > 1 ? 'es' : ''}`

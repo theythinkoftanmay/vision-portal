@@ -3,6 +3,7 @@ import { supabase } from './lib/supabase'
 import { useEffect, useState } from 'react'
 import CommunityHub from './components/CommunityHub'
 import PublishSchedule from './components/PublishSchedule'
+import TodayView from './components/TodayView'
 import Auth from './components/Auth'
 import OnboardingWizard from './components/onboarding/OnboardingWizard'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -93,6 +94,9 @@ function MainApp({ connectionStatus, user, onLogout }: {
               Vision Portal
             </Link>
             <div className="flex items-center gap-4">
+              <NavLink to="/" active={location.pathname === '/'}>
+                Today
+              </NavLink>
               <NavLink to="/community" active={location.pathname === '/community'}>
                 Community Hub
               </NavLink>
@@ -114,9 +118,10 @@ function MainApp({ connectionStatus, user, onLogout }: {
 
       {/* Main Content */}
       <Routes>
-        <Route path="/" element={<Home connectionStatus={connectionStatus} />} />
+        <Route path="/" element={<TodayView />} />
         <Route path="/community" element={<CommunityHub />} />
         <Route path="/publish" element={<PublishSchedule />} />
+        <Route path="/status" element={<Home connectionStatus={connectionStatus} />} />
       </Routes>
     </>
   )

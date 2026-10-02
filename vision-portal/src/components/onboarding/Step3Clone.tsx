@@ -20,7 +20,8 @@ export default function Step3Clone({ studentId, timetableId, onSuccess, onBack }
       setCloned(true)
     },
     onError: (error: Error) => {
-      alert(`Failed to clone: ${error.message}`)
+      console.error('Clone mutation error:', error)
+      alert(`Failed to clone: ${error.message}. You can go back and try a different timetable, or skip to create your own.`)
     },
   })
 
